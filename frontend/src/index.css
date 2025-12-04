@@ -1,45 +1,42 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary: #14B8A6;
-  --color-primary-50: #F0FDFA;
-  --color-primary-100: #CCFBF1;
-  --color-primary-200: #99F6E4;
-  --color-primary-300: #5EEAD4;
-  --color-primary-400: #2DD4BF;
-  --color-primary-500: #14B8A6;
-  --color-primary-600: #0D9488;
-  --color-primary-700: #0F766E;
-  --color-primary-800: #115E59;
-  --color-primary-900: #134E4A;
-
-  --color-accent: #F97316;
-  --color-accent-50: #FFF7ED;
-  --color-accent-100: #FFEDD5;
-  --color-accent-200: #FED7AA;
-  --color-accent-300: #FDBA74;
-  --color-accent-400: #FB923C;
-  --color-accent-500: #F97316;
-  --color-accent-600: #EA580C;
-  --color-accent-700: #C2410C;
-  --color-accent-800: #9A3412;
-  --color-accent-900: #7C2D12;
+  --color-black: #000000;
+  --color-white: #FFFFFF;
 
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
 }
 
+/* Import Inter Font */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600&display=swap');
+
 @layer base {
   body {
-    @apply bg-white text-gray-900 font-sans;
+    background-color: var(--color-white);
+    color: var(--color-black);
+    font-family: var(--font-sans);
+    font-weight: 300;
+    /* Thin/Light by default */
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-weight: 400;
+    /* Regular for headings */
+    letter-spacing: -0.02em;
   }
 }
 
 @layer components {
   .btn-primary {
-    @apply bg-primary hover:bg-primary-600 text-white font-semibold px-6 py-3 rounded-lg transition-all duration-200 hover:shadow-lg hover:scale-105 cursor-pointer;
+    @apply bg-black text-white px-6 py-3 rounded-none transition-all duration-200 hover:bg-gray-800 cursor-pointer text-sm font-normal tracking-wide;
   }
 
   .btn-secondary {
-    @apply bg-white hover:bg-gray-50 text-primary border-2 border-primary font-semibold px-6 py-3 rounded-lg transition-all duration-200 cursor-pointer;
+    @apply bg-white text-black border border-black px-6 py-3 rounded-none transition-all duration-200 hover:bg-gray-50 cursor-pointer text-sm font-normal tracking-wide;
   }
 }

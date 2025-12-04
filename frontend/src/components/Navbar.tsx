@@ -1,43 +1,50 @@
 import { Menu, X } from 'lucide-react';
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 export default function Navbar() {
     const [isOpen, setIsOpen] = useState(false);
 
     return (
-        <nav className="bg-white shadow-sm sticky top-0 z-50 backdrop-blur-sm bg-white/95">
+        <nav className="bg-white py-6">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="flex justify-between items-center h-16">
-                    {/* Logo */}
-                    <div className="flex-shrink-0">
-                        <h1 className="text-2xl font-bold text-primary">
-                            Prep<span className="text-accent">ToPlate</span>
-                        </h1>
+                <div className="flex justify-between items-center">
+                    {/* Left: Logo */}
+                    <div className="flex-shrink-0 w-32">
+                        <Link to="/">
+                            <h1 className="text-xl font-normal tracking-tight text-black">
+                                PrepToPlate
+                            </h1>
+                        </Link>
                     </div>
 
-                    {/* Desktop Navigation */}
-                    <div className="hidden md:flex items-center space-x-8">
-                        <a href="#" className="text-gray-700 hover:text-primary transition-colors">
-                            Home
-                        </a>
-                        <a href="#menu" className="text-gray-700 hover:text-primary transition-colors">
+                    {/* Center: Navigation */}
+                    <div className="hidden md:flex items-center justify-center space-x-12 flex-1">
+                        <Link to="/menu" className="text-black font-light text-sm hover:text-gray-600 transition-colors uppercase tracking-wide">
                             Menu
-                        </a>
-                        <a href="#how-it-works" className="text-gray-700 hover:text-primary transition-colors">
+                        </Link>
+                        <a href="#how-it-works" className="text-black font-light text-sm hover:text-gray-600 transition-colors uppercase tracking-wide">
                             How It Works
                         </a>
-                        <button className="btn-primary">
+                        <a href="#" className="text-black font-light text-sm hover:text-gray-600 transition-colors uppercase tracking-wide">
                             Get Started
-                        </button>
+                        </a>
+                    </div>
+
+                    {/* Right: Login */}
+                    <div className="hidden md:flex items-center justify-end w-32">
+                        <a href="#" className="text-black font-light text-sm hover:text-gray-600 transition-colors uppercase tracking-wide">
+                            Log In
+                        </a>
                     </div>
 
                     {/* Mobile menu button */}
                     <div className="md:hidden">
                         <button
                             onClick={() => setIsOpen(!isOpen)}
-                            className="text-gray-700 hover:text-primary transition-colors"
+                            className="text-black hover:text-gray-600 transition-colors"
                         >
-                            {isOpen ? <X size={24} /> : <Menu size={24} />}
+                            {isOpen ? <X size={24} strokeWidth={1} /> : <Menu size={24} strokeWidth={1} />}
                         </button>
                     </div>
                 </div>
@@ -45,29 +52,20 @@ export default function Navbar() {
 
             {/* Mobile Navigation */}
             {isOpen && (
-                <div className="md:hidden border-t">
-                    <div className="px-2 pt-2 pb-3 space-y-1">
-                        <a
-                            href="#"
-                            className="block px-3 py-2 text-gray-700 hover:text-primary hover:bg-gray-50 rounded-md"
-                        >
-                            Home
-                        </a>
-                        <a
-                            href="#menu"
-                            className="block px-3 py-2 text-gray-700 hover:text-primary hover:bg-gray-50 rounded-md"
-                        >
+                <div className="md:hidden mt-4 border-t border-gray-100">
+                    <div className="px-4 pt-4 pb-6 space-y-4 flex flex-col items-center">
+                        <Link to="/menu" className="text-black font-light text-sm uppercase tracking-wide">
                             Menu
-                        </a>
-                        <a
-                            href="#how-it-works"
-                            className="block px-3 py-2 text-gray-700 hover:text-primary hover:bg-gray-50 rounded-md"
-                        >
+                        </Link>
+                        <a href="#how-it-works" className="text-black font-light text-sm uppercase tracking-wide">
                             How It Works
                         </a>
-                        <button className="w-full mt-2 btn-primary">
+                        <a href="#" className="text-black font-light text-sm uppercase tracking-wide">
                             Get Started
-                        </button>
+                        </a>
+                        <a href="#" className="text-black font-light text-sm uppercase tracking-wide pt-4 border-t border-gray-100 w-full text-center">
+                            Log In
+                        </a>
                     </div>
                 </div>
             )}
