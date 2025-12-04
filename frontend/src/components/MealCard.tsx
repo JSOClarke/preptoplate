@@ -9,19 +9,51 @@ const pastelColors = [
     'bg-[#FFFFE5]', // Pastel Yellow
 ];
 
+// Complementary/opposite pastels for selection highlights
+const highlightColors = [
+    'border-[#FFB3B3]', // Deeper Pink
+    'border-[#99D6FF]', // Deeper Blue
+    'border-[#99FF99]', // Deeper Green
+    'border-[#FFCC99]', // Deeper Peach
+    'border-[#CC99FF]', // Deeper Purple
+    'border-[#FFFF99]', // Deeper Yellow
+];
+
 interface MealCardProps {
     meal: Meal;
     index: number;
+    isSelected: boolean;
+    onToggleSelect: (mealId: number) => void;
+    isLimitReached: boolean;
 }
 
-export default function MealCard({ meal, index }: MealCardProps) {
+export default function MealCard({ meal, index, isSelected, onToggleSelect, isLimitReached }: MealCardProps) {
     const bgColor = pastelColors[index % pastelColors.length];
+    const highlightColor = highlightColors[index % highlightColors.length];
+
+    const handleClick = () => {
+        // Allow deselection or selection if limit not reached
+        if (isSelected || !isLimitReached) {
+            onToggleSelect(meal.id);
+        }
+    };
 
     return (
         <div
-            className={`${bgColor} p-6 aspect-square flex flex-col justify-between transition-opacity hover:opacity-90 cursor-pointer`}
+            onClick={handleClick}
+            className={`${bgColor} p-6 aspect-square flex flex-col justify-between transition-all cursor-pointer
+        ${isSelected ? `border-4 ${highlightColor} shadow-lg scale-[1.02]` : 'border-4 border-transparent hover:opacity-90'}
+        ${!isSelected && isLimitReached ? 'opacity-50 cursor-not-allowed' : ''}
+      `}
         >
-            <div>
+            {/* Selection indicator */}
+            {isSelected && (
+                <div className="absolute top-2 right-2 bg-black text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">
+                    ✓
+                </div>
+            )}
+
+            <div className="relative">
                 <span className="text-xs font-light tracking-widest uppercase text-gray-600 mb-2 block">
                     {meal.category || 'N/A'}
                 </span>
