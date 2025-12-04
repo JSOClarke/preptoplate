@@ -1,25 +1,80 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useMenu } from '../hooks/useMenu';
+import { useCart } from '../hooks/useCart';
+import { useAuth } from '../hooks/useAuth';
 import MealCard from '../components/MealCard';
 
-const MAX_SELECTIONS = 10;
+const MAX_TOTAL_ITEMS = 10;
 
 export default function MenuPage() {
     const { menu, loading, error } = useMenu();
-    const [selectedMealIds, setSelectedMealIds] = useState<Set<number>>(new Set());
+    const { addToCart, clearCart, loading: cartLoading } = useCart();
+    const { isAuthenticated } = useAuth();
+    const navigate = useNavigate();
 
-    const handleToggleSelect = (mealId: number) => {
-        setSelectedMealIds((prev) => {
-            const newSet = new Set(prev);
-            if (newSet.has(mealId)) {
-                newSet.delete(mealId);
+    const [mealQuantities, setMealQuantities] = useState<Map<number, number>>(new Map());
+    const [cartError, setCartError] = useState<string | null>(null);
+
+    // Calculate total items across all meals
+    const totalItems = Array.from(mealQuantities.values()).reduce((sum, qty) => sum + qty, 0);
+    const isLimitReached = totalItems >= MAX_TOTAL_ITEMS;
+
+    const handleIncrement = (mealId: number) => {
+        if (totalItems < MAX_TOTAL_ITEMS) {
+            setMealQuantities((prev) => {
+                const newMap = new Map(prev);
+                const currentQty = newMap.get(mealId) || 0;
+                newMap.set(mealId, currentQty + 1);
+                return newMap;
+            });
+        }
+    };
+
+    const handleDecrement = (mealId: number) => {
+        setMealQuantities((prev) => {
+            const newMap = new Map(prev);
+            const currentQty = newMap.get(mealId) || 0;
+            if (currentQty > 1) {
+                newMap.set(mealId, currentQty - 1);
             } else {
-                if (newSet.size < MAX_SELECTIONS) {
-                    newSet.add(mealId);
-                }
+                newMap.delete(mealId);
             }
-            return newSet;
+            return newMap;
         });
+    };
+
+    const handleCheckout = async () => {
+        setCartError(null);
+
+        // Check authentication
+        if (!isAuthenticated) {
+            navigate('/login', { state: { from: { pathname: '/menu' } } });
+            return;
+        }
+
+        // Clear cart first
+        const cleared = await clearCart();
+        if (!cleared) {
+            setCartError('Failed to clear cart. Please try again.');
+            return;
+        }
+
+        // Add items to cart
+        let success = true;
+        for (const [mealId, quantity] of mealQuantities.entries()) {
+            const added = await addToCart({ meal_id: mealId, quantity });
+            if (!added) {
+                success = false;
+                break;
+            }
+        }
+
+        if (success) {
+            navigate('/checkout');
+        } else {
+            setCartError('Failed to add items to cart. Please try again.');
+        }
     };
 
     if (loading) {
@@ -51,8 +106,6 @@ export default function MenuPage() {
     const weekEnd = new Date(weekStart);
     weekEnd.setDate(weekEnd.getDate() + 6);
 
-    const isLimitReached = selectedMealIds.size >= MAX_SELECTIONS;
-
     return (
         <div className="py-16 bg-white">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -67,9 +120,9 @@ export default function MenuPage() {
                     <div className="mt-4">
                         <p className="text-sm font-light">
                             <span className={`font-normal ${isLimitReached ? 'text-red-500' : 'text-black'}`}>
-                                {selectedMealIds.size}
+                                {totalItems}
                             </span>
-                            {' '}/{MAX_SELECTIONS} meals selected
+                            {' '}/{MAX_TOTAL_ITEMS} meals selected
                         </p>
                         {isLimitReached && (
                             <p className="text-xs text-red-500 mt-1">Maximum selection reached</p>
@@ -84,18 +137,30 @@ export default function MenuPage() {
                             key={weeklyMenuMeal.meal.id}
                             meal={weeklyMenuMeal.meal}
                             index={index}
-                            isSelected={selectedMealIds.has(weeklyMenuMeal.meal.id)}
-                            onToggleSelect={handleToggleSelect}
+                            quantity={mealQuantities.get(weeklyMenuMeal.meal.id) || 0}
+                            onIncrement={handleIncrement}
+                            onDecrement={handleDecrement}
                             isLimitReached={isLimitReached}
                         />
                     ))}
                 </div>
 
+                {/* Cart Error */}
+                {cartError && (
+                    <div className="mt-8 p-4 bg-red-50 border border-red-200 text-red-600 text-sm font-light text-center max-w-md mx-auto">
+                        {cartError}
+                    </div>
+                )}
+
                 {/* Checkout Button */}
-                {selectedMealIds.size > 0 && (
+                {totalItems > 0 && (
                     <div className="mt-12 text-center">
-                        <button className="bg-black text-white px-12 py-4 text-sm font-normal uppercase tracking-wide hover:bg-gray-800 transition-colors">
-                            Continue to Checkout ({selectedMealIds.size} meals)
+                        <button
+                            onClick={handleCheckout}
+                            disabled={cartLoading}
+                            className="bg-black text-white px-12 py-4 text-sm font-normal uppercase tracking-wide hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            {cartLoading ? 'Processing...' : `Continue to Checkout (${totalItems} ${totalItems === 1 ? 'meal' : 'meals'})`}
                         </button>
                     </div>
                 )}

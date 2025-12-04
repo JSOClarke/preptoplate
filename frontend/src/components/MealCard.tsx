@@ -1,4 +1,5 @@
 import type { Meal } from '../types/menu';
+import { Minus } from 'lucide-react';
 
 const pastelColors = [
     'bg-[#FFE5E5]', // Pastel Pink
@@ -22,35 +23,53 @@ const highlightColors = [
 interface MealCardProps {
     meal: Meal;
     index: number;
-    isSelected: boolean;
-    onToggleSelect: (mealId: number) => void;
+    quantity: number;
+    onIncrement: (mealId: number) => void;
+    onDecrement: (mealId: number) => void;
     isLimitReached: boolean;
 }
 
-export default function MealCard({ meal, index, isSelected, onToggleSelect, isLimitReached }: MealCardProps) {
+export default function MealCard({ meal, index, quantity, onIncrement, onDecrement, isLimitReached }: MealCardProps) {
     const bgColor = pastelColors[index % pastelColors.length];
     const highlightColor = highlightColors[index % highlightColors.length];
+    const isSelected = quantity > 0;
 
-    const handleClick = () => {
-        // Allow deselection or selection if limit not reached
+    const handleCardClick = () => {
+        // Allow increment if limit not reached or if already selected
         if (isSelected || !isLimitReached) {
-            onToggleSelect(meal.id);
+            onIncrement(meal.id);
         }
+    };
+
+    const handleDecrementClick = (e: React.MouseEvent) => {
+        e.stopPropagation(); // Prevent card click
+        onDecrement(meal.id);
     };
 
     return (
         <div
-            onClick={handleClick}
-            className={`${bgColor} p-6 aspect-square flex flex-col justify-between transition-all cursor-pointer
+            onClick={handleCardClick}
+            className={`${bgColor} p-6 aspect-square flex flex-col justify-between transition-all cursor-pointer relative
         ${isSelected ? `border-4 ${highlightColor} shadow-lg scale-[1.02]` : 'border-4 border-transparent hover:opacity-90'}
         ${!isSelected && isLimitReached ? 'opacity-50 cursor-not-allowed' : ''}
       `}
         >
-            {/* Selection indicator */}
+            {/* Quantity Badge */}
             {isSelected && (
-                <div className="absolute top-2 right-2 bg-black text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">
-                    ✓
+                <div className="absolute top-2 right-2 bg-black text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">
+                    {quantity}
                 </div>
+            )}
+
+            {/* Minus Button */}
+            {isSelected && (
+                <button
+                    onClick={handleDecrementClick}
+                    className="absolute top-2 left-2 bg-red-500 text-white rounded-full w-7 h-7 flex items-center justify-center hover:bg-red-600 transition-colors"
+                    aria-label="Decrease quantity"
+                >
+                    <Minus size={16} strokeWidth={3} />
+                </button>
             )}
 
             <div className="relative">
