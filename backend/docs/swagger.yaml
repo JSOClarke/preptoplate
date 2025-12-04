@@ -1,0 +1,927 @@
+basePath: /api
+definitions:
+  models.AddToCartRequest:
+    properties:
+      meal_id:
+        type: integer
+      quantity:
+        minimum: 1
+        type: integer
+    required:
+    - meal_id
+    - quantity
+    type: object
+  models.AuthResponse:
+    properties:
+      token:
+        type: string
+      user:
+        $ref: '#/definitions/models.User'
+    type: object
+  models.Cart:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      items:
+        items:
+          $ref: '#/definitions/models.CartItem'
+        type: array
+      total_items:
+        type: integer
+      total_price:
+        description: in cents
+        type: integer
+      updated_at:
+        type: string
+      user_id:
+        type: integer
+    type: object
+  models.CartItem:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      meal:
+        $ref: '#/definitions/models.Meal'
+      quantity:
+        type: integer
+    type: object
+  models.CheckoutRequest:
+    properties:
+      delivery_date:
+        type: string
+    required:
+    - delivery_date
+    type: object
+  models.CreateMealRequest:
+    properties:
+      calories:
+        type: integer
+      carbs:
+        type: integer
+      description:
+        type: string
+      fat:
+        type: integer
+      image_url:
+        type: string
+      name:
+        type: string
+      price:
+        type: integer
+      protein:
+        type: integer
+    required:
+    - name
+    - price
+    type: object
+  models.CreateUserRequest:
+    properties:
+      email:
+        type: string
+      password:
+        minLength: 6
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  models.CreateWeeklyMenuRequest:
+    properties:
+      meals:
+        items:
+          $ref: '#/definitions/models.MenuMealInput'
+        minItems: 1
+        type: array
+      week_start_date:
+        type: string
+    required:
+    - meals
+    - week_start_date
+    type: object
+  models.LoginRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  models.Meal:
+    properties:
+      calories:
+        type: integer
+      carbs:
+        type: integer
+      description:
+        type: string
+      fat:
+        type: integer
+      id:
+        type: integer
+      image_url:
+        type: string
+      name:
+        type: string
+      price:
+        description: stored in cents
+        type: integer
+      protein:
+        type: integer
+    type: object
+  models.MenuMealInput:
+    properties:
+      meal_id:
+        type: integer
+      stock:
+        minimum: 1
+        type: integer
+    required:
+    - meal_id
+    - stock
+    type: object
+  models.Order:
+    properties:
+      created_at:
+        type: string
+      delivery_date:
+        type: string
+      id:
+        type: integer
+      items:
+        items:
+          $ref: '#/definitions/models.OrderItem'
+        type: array
+      status:
+        type: string
+      total_price:
+        type: integer
+      user_id:
+        type: integer
+      week_id:
+        type: integer
+    type: object
+  models.OrderItem:
+    properties:
+      meal:
+        $ref: '#/definitions/models.Meal'
+      price:
+        description: Price at time of order (in cents)
+        type: integer
+      quantity:
+        type: integer
+    type: object
+  models.UpdateCartItemRequest:
+    properties:
+      quantity:
+        description: 0 = remove
+        minimum: 0
+        type: integer
+    required:
+    - quantity
+    type: object
+  models.UpdateMealRequest:
+    properties:
+      calories:
+        type: integer
+      carbs:
+        type: integer
+      description:
+        type: string
+      fat:
+        type: integer
+      image_url:
+        type: string
+      name:
+        type: string
+      price:
+        type: integer
+      protein:
+        type: integer
+    type: object
+  models.User:
+    properties:
+      created_at:
+        type: string
+      email:
+        type: string
+      id:
+        type: integer
+      role:
+        type: string
+    type: object
+  models.WeeklyMenu:
+    properties:
+      id:
+        type: integer
+      is_active:
+        type: boolean
+      meals:
+        items:
+          $ref: '#/definitions/models.WeeklyMenuMeal'
+        type: array
+      week_start_date:
+        type: string
+    type: object
+  models.WeeklyMenuMeal:
+    properties:
+      available_stock:
+        type: integer
+      initial_stock:
+        type: integer
+      meal:
+        $ref: '#/definitions/models.Meal'
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: support@preptoplate.com
+    name: API Support
+  description: Meal prep subscription service API with weekly menus and stock management
+  license:
+    name: MIT
+    url: http://opensource.org/licenses/MIT
+  termsOfService: http://swagger.io/terms/
+  title: PrepToPlate API
+  version: "1.0"
+paths:
+  /admin/weekly-menus:
+    post:
+      consumes:
+      - application/json
+      description: Admin only - Create a new weekly menu with meals and stock
+      parameters:
+      - description: Menu data
+        in: body
+        name: menu
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateWeeklyMenuRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.WeeklyMenu'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: Forbidden
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create weekly menu
+      tags:
+      - admin
+      - weekly-menu
+  /admin/weekly-menus/{id}:
+    get:
+      description: Admin only - Get details of a specific weekly menu
+      parameters:
+      - description: Menu ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.WeeklyMenu'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: Forbidden
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get weekly menu by ID
+      tags:
+      - admin
+      - weekly-menu
+  /admin/weekly-menus/{id}/activate:
+    put:
+      description: Admin only - Set a menu as active (deactivates all other menus)
+      parameters:
+      - description: Menu ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: Forbidden
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Activate weekly menu
+      tags:
+      - admin
+      - weekly-menu
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Authenticate user and get JWT token
+      parameters:
+      - description: Login credentials
+        in: body
+        name: credentials
+        required: true
+        schema:
+          $ref: '#/definitions/models.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.AuthResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: User login
+      tags:
+      - auth
+  /auth/register:
+    post:
+      consumes:
+      - application/json
+      description: Create a new user account
+      parameters:
+      - description: User registration data
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.AuthResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Register new user
+      tags:
+      - auth
+  /cart:
+    delete:
+      description: Remove all items from the user's cart
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Clear cart
+      tags:
+      - cart
+    get:
+      description: Retrieve the authenticated user's cart with all items
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Cart'
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get user's cart
+      tags:
+      - cart
+  /cart/items:
+    post:
+      consumes:
+      - application/json
+      description: Add a meal to the user's cart (max 10 meals total)
+      parameters:
+      - description: Meal to add
+        in: body
+        name: item
+        required: true
+        schema:
+          $ref: '#/definitions/models.AddToCartRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Cart'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Add meal to cart
+      tags:
+      - cart
+  /cart/items/{id}:
+    delete:
+      description: Remove a specific item from the cart
+      parameters:
+      - description: Cart Item ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Remove item from cart
+      tags:
+      - cart
+    put:
+      consumes:
+      - application/json
+      description: Update the quantity of a cart item (0 = remove)
+      parameters:
+      - description: Cart Item ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: New quantity
+        in: body
+        name: item
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdateCartItemRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Cart'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update cart item quantity
+      tags:
+      - cart
+  /meals:
+    get:
+      description: Get list of all available meals
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Meal'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: List all meals
+      tags:
+      - meals
+    post:
+      consumes:
+      - application/json
+      description: Admin only - Create a new meal
+      parameters:
+      - description: Meal data
+        in: body
+        name: meal
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateMealRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Meal'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: Forbidden
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create meal
+      tags:
+      - meals
+      - admin
+  /meals/{id}:
+    delete:
+      description: Admin only - Delete a meal
+      parameters:
+      - description: Meal ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: Forbidden
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Delete meal
+      tags:
+      - meals
+      - admin
+    get:
+      description: Get a specific meal by its ID
+      parameters:
+      - description: Meal ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Meal'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get meal by ID
+      tags:
+      - meals
+    put:
+      consumes:
+      - application/json
+      description: Admin only - Update an existing meal
+      parameters:
+      - description: Meal ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Updated meal data
+        in: body
+        name: meal
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdateMealRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Meal'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: Forbidden
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update meal
+      tags:
+      - meals
+      - admin
+  /menu:
+    get:
+      description: Get the currently active weekly menu with stock information
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.WeeklyMenu'
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get active weekly menu
+      tags:
+      - weekly-menu
+  /orders:
+    get:
+      description: Get all orders for the authenticated user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Order'
+            type: array
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get user's orders
+      tags:
+      - orders
+  /orders/{id}:
+    get:
+      description: Get details of a specific order (must belong to user)
+      parameters:
+      - description: Order ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Order'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get order by ID
+      tags:
+      - orders
+  /orders/checkout:
+    post:
+      consumes:
+      - application/json
+      description: Convert user's cart to an order (requires exactly 10 meals)
+      parameters:
+      - description: Checkout data
+        in: body
+        name: checkout
+        required: true
+        schema:
+          $ref: '#/definitions/models.CheckoutRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Order'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Checkout
+      tags:
+      - orders
+securityDefinitions:
+  BearerAuth:
+    description: Type "Bearer" followed by a space and JWT token
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

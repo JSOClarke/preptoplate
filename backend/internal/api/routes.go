@@ -3,11 +3,16 @@ package api
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx/v5/pgxpool"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
+
 	"github.com/jopari/preptoplate/internal/api/handlers"
 	"github.com/jopari/preptoplate/internal/config"
 	"github.com/jopari/preptoplate/internal/middleware"
 	"github.com/jopari/preptoplate/internal/repository"
 	"github.com/jopari/preptoplate/internal/service"
+
+	_ "github.com/jopari/preptoplate/docs" // Swagger docs
 )
 
 func SetupRouter(db *pgxpool.Pool, cfg *config.Config) *gin.Engine {
@@ -94,6 +99,9 @@ func SetupRouter(db *pgxpool.Pool, cfg *config.Config) *gin.Engine {
 			orders.GET("/:id", orderHandler.GetByID)
 		}
 	}
+
+	// Swagger documentation
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	return r
 }

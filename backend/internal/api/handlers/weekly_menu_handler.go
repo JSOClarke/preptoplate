@@ -19,6 +19,18 @@ func NewWeeklyMenuHandler(service service.WeeklyMenuService) *WeeklyMenuHandler 
 
 // Admin endpoints
 
+// @Summary      Create weekly menu
+// @Description  Admin only - Create a new weekly menu with meals and stock
+// @Tags         admin,weekly-menu
+// @Accept       json
+// @Produce      json
+// @Param        menu  body      models.CreateWeeklyMenuRequest  true  "Menu data"
+// @Success      201   {object}  models.WeeklyMenu
+// @Failure      400   {object}  map[string]string
+// @Failure      401   {object}  map[string]string
+// @Failure      403   {object}  map[string]string
+// @Security     BearerAuth
+// @Router       /admin/weekly-menus [post]
 func (h *WeeklyMenuHandler) Create(c *gin.Context) {
 	var req models.CreateWeeklyMenuRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -35,6 +47,18 @@ func (h *WeeklyMenuHandler) Create(c *gin.Context) {
 	c.JSON(http.StatusCreated, menu)
 }
 
+// @Summary      Get weekly menu by ID
+// @Description  Admin only - Get details of a specific weekly menu
+// @Tags         admin,weekly-menu
+// @Produce      json
+// @Param        id   path      int  true  "Menu ID"
+// @Success      200  {object}  models.WeeklyMenu
+// @Failure      400  {object}  map[string]string
+// @Failure      401  {object}  map[string]string
+// @Failure      403  {object}  map[string]string
+// @Failure      404  {object}  map[string]string
+// @Security     BearerAuth
+// @Router       /admin/weekly-menus/{id} [get]
 func (h *WeeklyMenuHandler) GetByID(c *gin.Context) {
 	idParam := c.Param("id")
 	id, err := strconv.Atoi(idParam)
@@ -52,6 +76,16 @@ func (h *WeeklyMenuHandler) GetByID(c *gin.Context) {
 	c.JSON(http.StatusOK, menu)
 }
 
+// @Summary      Activate weekly menu
+// @Description  Admin only - Set a menu as active (deactivates all other menus)
+// @Tags         admin,weekly-menu
+// @Param        id   path      int  true  "Menu ID"
+// @Success      200  {object}  map[string]string
+// @Failure      400  {object}  map[string]string
+// @Failure      401  {object}  map[string]string
+// @Failure      403  {object}  map[string]string
+// @Security     BearerAuth
+// @Router       /admin/weekly-menus/{id}/activate [put]
 func (h *WeeklyMenuHandler) Activate(c *gin.Context) {
 	idParam := c.Param("id")
 	id, err := strconv.Atoi(idParam)
@@ -71,6 +105,14 @@ func (h *WeeklyMenuHandler) Activate(c *gin.Context) {
 
 // Public endpoints
 
+// @Summary      Get active weekly menu
+// @Description  Get the currently active weekly menu with stock information
+// @Tags         weekly-menu
+// @Produce      json
+// @Success      200  {object}  models.WeeklyMenu
+// @Failure      404  {object}  map[string]string
+// @Failure      500  {object}  map[string]string
+// @Router       /menu [get]
 func (h *WeeklyMenuHandler) GetActiveMenu(c *gin.Context) {
 	menu, err := h.service.GetActive(c.Request.Context())
 	if err != nil {
