@@ -49,58 +49,76 @@ export default function MealCard({ meal, index, quantity, onIncrement, onDecreme
     return (
         <div
             onClick={handleCardClick}
-            className={`${bgColor} p-6 aspect-square flex flex-col justify-between transition-all cursor-pointer relative
-        ${isSelected ? `border-4 ${highlightColor} shadow-lg scale-[1.02]` : 'border-4 border-transparent hover:opacity-90'}
+            className={`bg-white border-4 flex flex-col justify-between transition-all cursor-pointer relative overflow-hidden h-full
+        ${isSelected ? `${highlightColor} shadow-lg scale-[1.02]` : 'border-transparent hover:shadow-md'}
         ${!isSelected && isLimitReached ? 'opacity-50 cursor-not-allowed' : ''}
       `}
         >
-            {/* Quantity Badge */}
-            {isSelected && (
-                <div className="absolute top-2 right-2 bg-black text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">
-                    {quantity}
-                </div>
-            )}
+            {/* Image Section */}
+            <div className={`h-48 w-full relative ${!meal.image_url ? bgColor : ''}`}>
+                {meal.image_url ? (
+                    <img
+                        src={meal.image_url}
+                        alt={meal.name}
+                        className="w-full h-full object-cover"
+                    />
+                ) : (
+                    <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs uppercase tracking-widest">
+                        No Image
+                    </div>
+                )}
 
-            {/* Minus Button */}
-            {isSelected && (
-                <button
-                    onClick={handleDecrementClick}
-                    className="absolute top-2 left-2 bg-red-500 text-white rounded-full w-7 h-7 flex items-center justify-center hover:bg-red-600 transition-colors"
-                    aria-label="Decrease quantity"
-                >
-                    <Minus size={16} strokeWidth={3} />
-                </button>
-            )}
+                {/* Quantity Badge - Overlaid on Image */}
+                {isSelected && (
+                    <div className="absolute top-2 right-2 bg-black text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold shadow-md z-10">
+                        {quantity}
+                    </div>
+                )}
 
-            <div className="relative">
-                <span className="text-xs font-light tracking-widest uppercase text-gray-600 mb-2 block">
-                    {meal.category || 'N/A'}
-                </span>
-                <h3 className="text-xl font-normal mb-2">{meal.name}</h3>
-                <p className="text-sm font-light text-gray-700 leading-relaxed">
-                    {meal.description}
-                </p>
+                {/* Minus Button - Overlaid on Image */}
+                {isSelected && (
+                    <button
+                        onClick={handleDecrementClick}
+                        className="absolute top-2 left-2 bg-red-500 text-white rounded-full w-7 h-7 flex items-center justify-center hover:bg-red-600 transition-colors shadow-md z-10"
+                        aria-label="Decrease quantity"
+                    >
+                        <Minus size={16} strokeWidth={3} />
+                    </button>
+                )}
             </div>
 
-            <div className="space-y-2">
-                {meal.calories !== undefined && (
-                    <div className="flex justify-between items-center text-xs font-light">
-                        <span className="tracking-wide uppercase">Calories</span>
-                        <span>{meal.calories}</span>
-                    </div>
-                )}
-                {meal.protein !== undefined && (
-                    <div className="flex justify-between items-center text-xs font-light">
-                        <span className="tracking-wide uppercase">Protein</span>
-                        <span>{meal.protein}g</span>
-                    </div>
-                )}
-                {meal.price !== undefined && (
-                    <div className="flex justify-between items-center text-xs font-light">
-                        <span className="tracking-wide uppercase">Price</span>
-                        <span className="font-normal">${meal.price.toFixed(2)}</span>
-                    </div>
-                )}
+            {/* Content Section */}
+            <div className={`p-5 flex flex-col flex-grow ${bgColor}`}>
+                <div className="relative mb-4">
+                    <span className="text-xs font-light tracking-widest uppercase text-gray-600 mb-1 block">
+                        {meal.category || 'N/A'}
+                    </span>
+                    <h3 className="text-xl font-normal mb-2 leading-tight">{meal.name}</h3>
+                    <p className="text-sm font-light text-gray-700 leading-relaxed line-clamp-3">
+                        {meal.description}
+                    </p>
+                </div>
+
+                <div className="mt-auto space-y-2 pt-4 border-t border-black/5">
+                    {meal.calories !== undefined && (
+                        <div className="flex justify-between items-center text-xs font-light">
+                            <span className="tracking-wide uppercase">Calories</span>
+                            <span>{meal.calories}</span>
+                        </div>
+                    )}
+                    {meal.protein !== undefined && (
+                        <div className="flex justify-between items-center text-xs font-light">
+                            <span className="tracking-wide uppercase">Protein</span>
+                            <span>{meal.protein}g</span>
+                        </div>
+                    )}
+                    {meal.price !== undefined && (
+                        <div className="flex justify-between items-center text-xs font-light">
+                            <span className="tracking-wide uppercase">Price</span>
+                            <span className="font-normal">${((meal.price || 0) / 100).toFixed(2)}</span>
+                        </div>
+                    )}
+                </div>
             </div>
         </div>
     );

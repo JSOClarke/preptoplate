@@ -1,6 +1,7 @@
-import { useState, useEffect, type FormEvent } from 'react';
-import { X } from 'lucide-react';
+import { useState, useEffect, type FormEvent, type ChangeEvent } from 'react';
+import { X, Upload, Loader2 } from 'lucide-react';
 import type { Meal } from '../types/menu';
+import { api } from '../lib/api';
 
 interface MealFormModalProps {
     isOpen: boolean;
@@ -38,6 +39,7 @@ export default function MealFormModal({
         fat: 0,
         price: 0,
     });
+    const [uploading, setUploading] = useState(false);
 
     // Initialize form with meal data when editing
     useEffect(() => {
@@ -66,6 +68,25 @@ export default function MealFormModal({
             });
         }
     }, [meal, isOpen]);
+
+    const handleImageUpload = async (e: ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        try {
+            setUploading(true);
+            const data = new FormData();
+            data.append('file', file);
+
+            const response = await api.upload<{ url: string }>('/upload', data);
+            setFormData(prev => ({ ...prev, image_url: response.url }));
+        } catch (error) {
+            console.error('Failed to upload image:', error);
+            alert('Failed to upload image. Please try again.');
+        } finally {
+            setUploading(false);
+        }
+    };
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
@@ -149,19 +170,56 @@ export default function MealFormModal({
                         />
                     </div>
 
-                    {/* Image URL */}
+                    {/* Image Upload */}
                     <div>
-                        <label htmlFor="image_url" className="block text-xs font-light uppercase tracking-wide mb-2">
-                            Image URL
+                        <label className="block text-xs font-light uppercase tracking-wide mb-2">
+                            Meal Image
                         </label>
-                        <input
-                            id="image_url"
-                            type="url"
-                            value={formData.image_url}
-                            onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
-                            className="w-full px-4 py-3 border border-black text-sm font-light focus:outline-none focus:ring-1 focus:ring-black"
-                            placeholder="https://example.com/image.jpg"
-                        />
+                        <div className="flex items-start gap-4">
+                            {/* Preview */}
+                            <div className="w-32 h-32 border border-gray-200 bg-gray-50 flex items-center justify-center overflow-hidden relative">
+                                {uploading ? (
+                                    <Loader2 className="w-6 h-6 animate-spin text-gray-400" />
+                                ) : formData.image_url ? (
+                                    <img
+                                        src={formData.image_url}
+                                        alt="Preview"
+                                        className="w-full h-full object-cover"
+                                    />
+                                ) : (
+                                    <div className="text-gray-300 text-xs text-center px-2">No image</div>
+                                )}
+                            </div>
+
+                            {/* Upload Button */}
+                            <div className="flex-1">
+                                <label
+                                    htmlFor="image-upload"
+                                    className={`flex items-center justify-center gap-2 w-full px-4 py-3 border border-dashed border-black cursor-pointer hover:bg-gray-50 transition-colors ${uploading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                >
+                                    <Upload size={16} />
+                                    <span className="text-sm font-light uppercase">
+                                        {uploading ? 'Uploading...' : 'Upload Photo'}
+                                    </span>
+                                    <input
+                                        id="image-upload"
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={handleImageUpload}
+                                        disabled={uploading}
+                                        className="hidden"
+                                    />
+                                </label>
+                                <p className="mt-2 text-xs text-gray-500 font-light">
+                                    Recommended: Square JPG or PNG, max 5MB.
+                                </p>
+                                {formData.image_url && (
+                                    <p className="mt-1 text-xs text-green-600 font-light truncate">
+                                        ✓ Image uploaded successfully
+                                    </p>
+                                )}
+                            </div>
+                        </div>
                     </div>
 
                     {/* Price */}

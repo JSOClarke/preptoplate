@@ -45,12 +45,16 @@ func SetupRouter(db *pgxpool.Pool, cfg *config.Config) *gin.Engine {
 	menuService := service.NewWeeklyMenuService(menuRepo, mealRepo)
 	orderService := service.NewOrderService(orderRepo, cartRepo, menuRepo)
 
+	// Image Service (Cloudinary)
+	imageService, _ := service.NewImageService() // Ignore error, will fail gracefully on upload if not configured
+
 	// Handlers
 	authHandler := handlers.NewAuthHandler(authService)
 	mealHandler := handlers.NewMealHandler(mealService)
 	cartHandler := handlers.NewCartHandler(cartService)
 	menuHandler := handlers.NewWeeklyMenuHandler(menuService)
 	orderHandler := handlers.NewOrderHandler(orderService)
+	uploadHandler := handlers.NewUploadHandler(imageService)
 
 	// Routes
 	api := r.Group("/api")
@@ -60,6 +64,9 @@ func SetupRouter(db *pgxpool.Pool, cfg *config.Config) *gin.Engine {
 			auth.POST("/register", authHandler.Register)
 			auth.POST("/login", authHandler.Login)
 		}
+
+		// Admin Upload Route
+		api.POST("/upload", middleware.AuthMiddleware(cfg), middleware.RequireAdmin(), uploadHandler.HandleImageUpload)
 
 		meals := api.Group("/meals")
 		{

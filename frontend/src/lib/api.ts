@@ -71,6 +71,25 @@ class ApiClient {
 
         return response.json();
     }
+
+    async upload<T>(endpoint: string, formData: FormData): Promise<T> {
+        const headers = this.getAuthHeaders();
+        // Remove Content-Type to let browser set it with boundary
+        delete headers['Content-Type'];
+
+        const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+            method: 'POST',
+            headers,
+            body: formData,
+        });
+
+        if (!response.ok) {
+            const error = await response.json().catch(() => ({ error: 'Request failed' }));
+            throw new Error(error.error || 'Request failed');
+        }
+
+        return response.json();
+    }
 }
 
 export const api = new ApiClient();
