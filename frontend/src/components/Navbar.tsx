@@ -20,7 +20,7 @@ export default function Navbar() {
                     <div className="flex-shrink-0">
                         <Link to="/">
                             <img
-                                src="/logo.png"
+                                src="/logo.svg"
                                 alt="PrepToPlate"
                                 className="h-12 w-auto"
                             />
@@ -32,7 +32,7 @@ export default function Navbar() {
                         <Link to="/menu" className="text-black font-light text-sm hover:text-gray-600 transition-colors uppercase tracking-wide">
                             Menu
                         </Link>
-                        <a href="#how-it-works" className="text-black font-light text-sm hover:text-gray-600 transition-colors uppercase tracking-wide">
+                        <a href="/#how-it-works" className="text-black font-light text-sm hover:text-gray-600 transition-colors uppercase tracking-wide">
                             How It Works
                         </a>
                         {isAdmin && (
@@ -40,9 +40,9 @@ export default function Navbar() {
                                 Admin
                             </Link>
                         )}
-                        <a href="#" className="text-black font-light text-sm hover:text-gray-600 transition-colors uppercase tracking-wide">
+                        <Link to="/register" className="text-black font-light text-sm hover:text-gray-600 transition-colors uppercase tracking-wide">
                             Get Started
-                        </a>
+                        </Link>
                     </div>
 
                     {/* Right: Auth */}
@@ -86,7 +86,7 @@ export default function Navbar() {
                         <Link to="/menu" className="text-black font-light text-sm uppercase tracking-wide" onClick={() => setIsOpen(false)}>
                             Menu
                         </Link>
-                        <a href="#how-it-works" className="text-black font-light text-sm uppercase tracking-wide" onClick={() => setIsOpen(false)}>
+                        <a href="/#how-it-works" className="text-black font-light text-sm uppercase tracking-wide" onClick={() => setIsOpen(false)}>
                             How It Works
                         </a>
                         {isAdmin && (
@@ -94,9 +94,9 @@ export default function Navbar() {
                                 Admin
                             </Link>
                         )}
-                        <a href="#" className="text-black font-light text-sm uppercase tracking-wide" onClick={() => setIsOpen(false)}>
+                        <Link to="/register" className="text-black font-light text-sm uppercase tracking-wide" onClick={() => setIsOpen(false)}>
                             Get Started
-                        </a>
+                        </Link>
 
                         {isAuthenticated ? (
                             <>
