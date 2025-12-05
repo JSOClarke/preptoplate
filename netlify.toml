@@ -3,6 +3,9 @@
   publish = "dist"
   command = "npm run build"
 
+[context.production.environment]
+  VITE_API_URL = "https://preptoplate-backend.onrender.com/api"
+
 [[redirects]]
   from = "/*"
   to = "/index.html"
