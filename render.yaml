@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: preptoplate-backend
+    env: docker
+    dockerfilePath: ./backend/Dockerfile
+    context: ./backend
+    plan: free
+    region: oregon
+    envVars:
+      - key: PORT
+        value: 8080
+      - key: DATABASE_URL
+        fromDatabase:
+          name: preptoplate-db
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+
+databases:
+  - name: preptoplate-db
+    databaseName: preptoplate
+    user: preptoplate
+    plan: free
+    region: oregon
