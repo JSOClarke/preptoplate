@@ -2,7 +2,8 @@ export interface Meal {
     id: number;
     name: string;
     description: string;
-    category: string;
+    image_url?: string;
+    category?: string;
     price?: number;
     calories?: number;
     protein?: number;
@@ -21,4 +22,12 @@ export interface WeeklyMenu {
     week_start_date: string;
     is_active: boolean;
     meals: WeeklyMenuMeal[];
+}
+
+export interface CreateWeeklyMenuRequest {
+    week_start_date: string; // YYYY-MM-DD format
+    meals: {
+        meal_id: number;
+        stock: number;
+    }[];
 }

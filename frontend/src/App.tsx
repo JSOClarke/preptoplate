@@ -6,7 +6,12 @@ import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import CheckoutPage from './pages/CheckoutPage';
 import OrderConfirmationPage from './pages/OrderConfirmationPage';
+import AdminDashboard from './pages/AdminDashboard';
+import MealsManagement from './pages/MealsManagement';
+import MenusManagement from './pages/MenusManagement';
+import EditWeeklyMenu from './pages/EditWeeklyMenu';
 import ProtectedRoute from './components/ProtectedRoute';
+import AdminRoute from './components/AdminRoute';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import './index.css';
@@ -37,6 +42,38 @@ function App() {
                   <ProtectedRoute>
                     <OrderConfirmationPage />
                   </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/admin"
+                element={
+                  <AdminRoute>
+                    <AdminDashboard />
+                  </AdminRoute>
+                }
+              />
+              <Route
+                path="/admin/meals"
+                element={
+                  <AdminRoute>
+                    <MealsManagement />
+                  </AdminRoute>
+                }
+              />
+              <Route
+                path="/admin/menus"
+                element={
+                  <AdminRoute>
+                    <MenusManagement />
+                  </AdminRoute>
+                }
+              />
+              <Route
+                path="/admin/menus/:id/edit"
+                element={
+                  <AdminRoute>
+                    <EditWeeklyMenu />
+                  </AdminRoute>
                 }
               />
             </Routes>

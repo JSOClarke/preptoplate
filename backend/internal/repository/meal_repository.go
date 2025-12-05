@@ -15,6 +15,7 @@ type MealRepository interface {
 	GetAll(ctx context.Context) ([]models.Meal, error)
 	Update(ctx context.Context, id int, meal *models.Meal) error
 	Delete(ctx context.Context, id int) error
+	IsUsedInMenus(ctx context.Context, id int) (bool, error)
 }
 
 type mealRepository struct {
@@ -142,4 +143,14 @@ func (r *mealRepository) Delete(ctx context.Context, id int) error {
 		return errors.New("meal not found")
 	}
 	return nil
+}
+
+func (r *mealRepository) IsUsedInMenus(ctx context.Context, id int) (bool, error) {
+	query := `SELECT COUNT(*) FROM menu_meals WHERE meal_id = $1`
+	var count int
+	err := r.db.QueryRow(ctx, query, id).Scan(&count)
+	if err != nil {
+		return false, err
+	}
+	return count > 0, nil
 }

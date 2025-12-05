@@ -5,7 +5,7 @@ import { useCart } from '../hooks/useCart';
 import { useAuth } from '../hooks/useAuth';
 import MealCard from '../components/MealCard';
 
-const MAX_TOTAL_ITEMS = 10;
+const REQUIRED_MEAL_COUNT = 10;
 
 export default function MenuPage() {
     const { menu, loading, error } = useMenu();
@@ -18,17 +18,15 @@ export default function MenuPage() {
 
     // Calculate total items across all meals
     const totalItems = Array.from(mealQuantities.values()).reduce((sum, qty) => sum + qty, 0);
-    const isLimitReached = totalItems >= MAX_TOTAL_ITEMS;
+    const hasMinimumMeals = totalItems >= REQUIRED_MEAL_COUNT;
 
     const handleIncrement = (mealId: number) => {
-        if (totalItems < MAX_TOTAL_ITEMS) {
-            setMealQuantities((prev) => {
-                const newMap = new Map(prev);
-                const currentQty = newMap.get(mealId) || 0;
-                newMap.set(mealId, currentQty + 1);
-                return newMap;
-            });
-        }
+        setMealQuantities((prev) => {
+            const newMap = new Map(prev);
+            const currentQty = newMap.get(mealId) || 0;
+            newMap.set(mealId, currentQty + 1);
+            return newMap;
+        });
     };
 
     const handleDecrement = (mealId: number) => {
@@ -119,13 +117,18 @@ export default function MenuPage() {
                     {/* Selection Counter */}
                     <div className="mt-4">
                         <p className="text-sm font-light">
-                            <span className={`font-normal ${isLimitReached ? 'text-red-500' : 'text-black'}`}>
+                            <span className={`font-normal ${hasMinimumMeals ? 'text-green-600' : 'text-black'}`}>
                                 {totalItems}
                             </span>
-                            {' '}/{MAX_TOTAL_ITEMS} meals selected
+                            {' '}/ {REQUIRED_MEAL_COUNT} meals selected
                         </p>
-                        {isLimitReached && (
-                            <p className="text-xs text-red-500 mt-1">Maximum selection reached</p>
+                        {!hasMinimumMeals && totalItems > 0 && (
+                            <p className="text-xs text-gray-600 mt-1">
+                                Select at least {REQUIRED_MEAL_COUNT - totalItems} more {REQUIRED_MEAL_COUNT - totalItems === 1 ? 'meal' : 'meals'} to continue
+                            </p>
+                        )}
+                        {hasMinimumMeals && (
+                            <p className="text-xs text-green-600 mt-1">✓ Ready to checkout</p>
                         )}
                     </div>
                 </div>
@@ -140,7 +143,6 @@ export default function MenuPage() {
                             quantity={mealQuantities.get(weeklyMenuMeal.meal.id) || 0}
                             onIncrement={handleIncrement}
                             onDecrement={handleDecrement}
-                            isLimitReached={isLimitReached}
                         />
                     ))}
                 </div>
@@ -157,11 +159,16 @@ export default function MenuPage() {
                     <div className="mt-12 text-center">
                         <button
                             onClick={handleCheckout}
-                            disabled={cartLoading}
+                            disabled={cartLoading || !hasMinimumMeals}
                             className="bg-black text-white px-12 py-4 text-sm font-normal uppercase tracking-wide hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             {cartLoading ? 'Processing...' : `Continue to Checkout (${totalItems} ${totalItems === 1 ? 'meal' : 'meals'})`}
                         </button>
+                        {!hasMinimumMeals && (
+                            <p className="text-xs text-gray-600 mt-3">
+                                You must select exactly {REQUIRED_MEAL_COUNT} meals to checkout
+                            </p>
+                        )}
                     </div>
                 )}
             </div>

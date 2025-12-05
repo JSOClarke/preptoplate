@@ -98,7 +98,10 @@ func SetupRouter(db *pgxpool.Pool, cfg *config.Config) *gin.Engine {
 			weeklyMenus := admin.Group("/weekly-menus")
 			{
 				weeklyMenus.POST("", menuHandler.Create)
+				weeklyMenus.GET("", menuHandler.List)
 				weeklyMenus.GET("/:id", menuHandler.GetByID)
+				weeklyMenus.PUT("/:id", menuHandler.Update)
+				weeklyMenus.DELETE("/:id", menuHandler.Delete)
 				weeklyMenus.PUT("/:id/activate", menuHandler.Activate)
 			}
 		}

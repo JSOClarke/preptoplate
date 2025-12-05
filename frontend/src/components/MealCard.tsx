@@ -26,10 +26,10 @@ interface MealCardProps {
     quantity: number;
     onIncrement: (mealId: number) => void;
     onDecrement: (mealId: number) => void;
-    isLimitReached: boolean;
+    isLimitReached?: boolean;
 }
 
-export default function MealCard({ meal, index, quantity, onIncrement, onDecrement, isLimitReached }: MealCardProps) {
+export default function MealCard({ meal, index, quantity, onIncrement, onDecrement, isLimitReached = false }: MealCardProps) {
     const bgColor = pastelColors[index % pastelColors.length];
     const highlightColor = highlightColors[index % highlightColors.length];
     const isSelected = quantity > 0;

@@ -5,7 +5,7 @@ import { useAuth } from '../hooks/useAuth';
 
 export default function Navbar() {
     const [isOpen, setIsOpen] = useState(false);
-    const { isAuthenticated, user, logout } = useAuth();
+    const { isAuthenticated, isAdmin, user, logout } = useAuth();
 
     const handleLogout = () => {
         logout();
@@ -17,11 +17,13 @@ export default function Navbar() {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between items-center">
                     {/* Left: Logo */}
-                    <div className="flex-shrink-0 w-32">
+                    <div className="flex-shrink-0">
                         <Link to="/">
-                            <h1 className="text-xl font-normal tracking-tight text-black">
-                                PrepToPlate
-                            </h1>
+                            <img
+                                src="/logo.png"
+                                alt="PrepToPlate"
+                                className="h-12 w-auto"
+                            />
                         </Link>
                     </div>
 
@@ -33,6 +35,11 @@ export default function Navbar() {
                         <a href="#how-it-works" className="text-black font-light text-sm hover:text-gray-600 transition-colors uppercase tracking-wide">
                             How It Works
                         </a>
+                        {isAdmin && (
+                            <Link to="/admin" className="text-black font-light text-sm hover:text-gray-600 transition-colors uppercase tracking-wide">
+                                Admin
+                            </Link>
+                        )}
                         <a href="#" className="text-black font-light text-sm hover:text-gray-600 transition-colors uppercase tracking-wide">
                             Get Started
                         </a>
@@ -82,6 +89,11 @@ export default function Navbar() {
                         <a href="#how-it-works" className="text-black font-light text-sm uppercase tracking-wide" onClick={() => setIsOpen(false)}>
                             How It Works
                         </a>
+                        {isAdmin && (
+                            <Link to="/admin" className="text-black font-light text-sm uppercase tracking-wide" onClick={() => setIsOpen(false)}>
+                                Admin
+                            </Link>
+                        )}
                         <a href="#" className="text-black font-light text-sm uppercase tracking-wide" onClick={() => setIsOpen(false)}>
                             Get Started
                         </a>

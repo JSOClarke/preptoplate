@@ -96,8 +96,8 @@ func (s *cartService) AddItem(ctx context.Context, userID int, req *models.AddTo
 }
 
 func (s *cartService) UpdateItem(ctx context.Context, userID, itemID int, req *models.UpdateCartItemRequest) (*models.Cart, error) {
-	// Get cart to verify ownership
-	cart, err := s.cartRepo.GetByUserID(ctx, userID)
+	// Get or create cart to verify ownership
+	cart, err := s.cartRepo.GetOrCreateByUserID(ctx, userID)
 	if err != nil {
 		return nil, err
 	}
@@ -145,8 +145,8 @@ func (s *cartService) UpdateItem(ctx context.Context, userID, itemID int, req *m
 }
 
 func (s *cartService) RemoveItem(ctx context.Context, userID, itemID int) error {
-	// Get cart to verify ownership
-	cart, err := s.cartRepo.GetByUserID(ctx, userID)
+	// Get or create cart to verify ownership
+	cart, err := s.cartRepo.GetOrCreateByUserID(ctx, userID)
 	if err != nil {
 		return err
 	}
@@ -170,7 +170,7 @@ func (s *cartService) RemoveItem(ctx context.Context, userID, itemID int) error 
 }
 
 func (s *cartService) ClearCart(ctx context.Context, userID int) error {
-	cart, err := s.cartRepo.GetByUserID(ctx, userID)
+	cart, err := s.cartRepo.GetOrCreateByUserID(ctx, userID)
 	if err != nil {
 		return err
 	}

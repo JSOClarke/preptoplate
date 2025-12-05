@@ -47,6 +47,26 @@ func (h *WeeklyMenuHandler) Create(c *gin.Context) {
 	c.JSON(http.StatusCreated, menu)
 }
 
+// @Summary      List all weekly menus
+// @Description  Admin only - Get list of all weekly menus
+// @Tags         admin,weekly-menu
+// @Produce      json
+// @Success      200  {array}   models.WeeklyMenu
+// @Failure      401  {object}  map[string]string
+// @Failure      403  {object}  map[string]string
+// @Failure      500  {object}  map[string]string
+// @Security     BearerAuth
+// @Router       /admin/weekly-menus [get]
+func (h *WeeklyMenuHandler) List(c *gin.Context) {
+	menus, err := h.service.GetAll(c.Request.Context())
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, menus)
+}
+
 // @Summary      Get weekly menu by ID
 // @Description  Admin only - Get details of a specific weekly menu
 // @Tags         admin,weekly-menu
@@ -101,6 +121,69 @@ func (h *WeeklyMenuHandler) Activate(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"message": "menu activated"})
+}
+
+// @Summary      Update weekly menu
+// @Description  Admin only - Update a weekly menu's date and meals
+// @Tags         admin,weekly-menu
+// @Accept       json
+// @Produce      json
+// @Param        id    path      int                            true  "Menu ID"
+// @Param        menu  body      models.UpdateWeeklyMenuRequest true  "Menu data"
+// @Success      200   {object}  models.WeeklyMenu
+// @Failure      400   {object}  map[string]string
+// @Failure      401   {object}  map[string]string
+// @Failure      403   {object}  map[string]string
+// @Security     BearerAuth
+// @Router       /admin/weekly-menus/{id} [put]
+func (h *WeeklyMenuHandler) Update(c *gin.Context) {
+	idParam := c.Param("id")
+	id, err := strconv.Atoi(idParam)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid menu id"})
+		return
+	}
+
+	var req models.UpdateWeeklyMenuRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	menu, err := h.service.Update(c.Request.Context(), id, &req)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, menu)
+}
+
+// @Summary      Delete weekly menu
+// @Description  Admin only - Delete a weekly menu (cannot delete active menus)
+// @Tags         admin,weekly-menu
+// @Param        id   path      int  true  "Menu ID"
+// @Success      200  {object}  map[string]string
+// @Failure      400  {object}  map[string]string
+// @Failure      401  {object}  map[string]string
+// @Failure      403  {object}  map[string]string
+// @Security     BearerAuth
+// @Router       /admin/weekly-menus/{id} [delete]
+func (h *WeeklyMenuHandler) Delete(c *gin.Context) {
+	idParam := c.Param("id")
+	id, err := strconv.Atoi(idParam)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid menu id"})
+		return
+	}
+
+	err = h.service.Delete(c.Request.Context(), id)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "menu deleted successfully"})
 }
 
 // Public endpoints

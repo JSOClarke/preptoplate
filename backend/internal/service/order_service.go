@@ -30,8 +30,8 @@ func NewOrderService(orderRepo repository.OrderRepository, cartRepo repository.C
 }
 
 func (s *orderService) Checkout(ctx context.Context, userID int, req *models.CheckoutRequest) (*models.Order, error) {
-	// Get user's cart
-	cart, err := s.cartRepo.GetByUserID(ctx, userID)
+	// Get or create user's cart
+	cart, err := s.cartRepo.GetOrCreateByUserID(ctx, userID)
 	if err != nil {
 		return nil, err
 	}

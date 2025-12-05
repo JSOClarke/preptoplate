@@ -102,5 +102,15 @@ func (s *mealService) Update(ctx context.Context, id int, req *models.UpdateMeal
 }
 
 func (s *mealService) Delete(ctx context.Context, id int) error {
+	// Check if meal exists in any weekly menus
+	isUsed, err := s.repo.IsUsedInMenus(ctx, id)
+	if err != nil {
+		return err
+	}
+
+	if isUsed {
+		return errors.New("cannot delete meal: it is currently used in one or more weekly menus")
+	}
+
 	return s.repo.Delete(ctx, id)
 }

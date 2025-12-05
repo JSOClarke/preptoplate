@@ -12,9 +12,13 @@ import (
 type WeeklyMenuRepository interface {
 	Create(ctx context.Context, menu *models.WeeklyMenu) error
 	GetByID(ctx context.Context, id int) (*models.WeeklyMenu, error)
+	GetAll(ctx context.Context) ([]models.WeeklyMenu, error)
 	GetActive(ctx context.Context) (*models.WeeklyMenu, error)
+	Update(ctx context.Context, id int, menu *models.WeeklyMenu) error
+	Delete(ctx context.Context, id int) error
 	Activate(ctx context.Context, id int) error
 	AddMeal(ctx context.Context, menuID, mealID, stock int) error
+	RemoveMeal(ctx context.Context, menuID, mealID int) error
 	GetMealStock(ctx context.Context, menuID, mealID int) (int, error)
 	DecrementStock(ctx context.Context, menuID, mealID, quantity int) error
 }
@@ -75,6 +79,39 @@ func (r *weeklyMenuRepository) GetByID(ctx context.Context, id int) (*models.Wee
 	}
 
 	return &menu, nil
+}
+
+func (r *weeklyMenuRepository) GetAll(ctx context.Context) ([]models.WeeklyMenu, error) {
+	query := `SELECT id, week_start_date, is_active FROM weekly_menus ORDER BY week_start_date DESC`
+	rows, err := r.db.Query(ctx, query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var menus []models.WeeklyMenu
+	for rows.Next() {
+		var menu models.WeeklyMenu
+		err := rows.Scan(&menu.ID, &menu.WeekStartDate, &menu.IsActive)
+		if err != nil {
+			return nil, err
+		}
+
+		// Get meal count for this menu
+		var mealCount int
+		countQuery := `SELECT COUNT(*) FROM menu_meals WHERE menu_id = $1`
+		err = r.db.QueryRow(ctx, countQuery, menu.ID).Scan(&mealCount)
+		if err != nil {
+			mealCount = 0
+		}
+
+		// Initialize meals slice with count (but don't load full meal data for list view)
+		menu.Meals = make([]models.WeeklyMenuMeal, mealCount)
+
+		menus = append(menus, menu)
+	}
+
+	return menus, nil
 }
 
 func (r *weeklyMenuRepository) GetActive(ctx context.Context) (*models.WeeklyMenu, error) {
@@ -155,5 +192,77 @@ func (r *weeklyMenuRepository) DecrementStock(ctx context.Context, menuID, mealI
 		return errors.New("insufficient stock or meal not found")
 	}
 
+	return nil
+}
+
+func (r *weeklyMenuRepository) Update(ctx context.Context, id int, menu *models.WeeklyMenu) error {
+	tx, err := r.db.Begin(ctx)
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback(ctx)
+
+	// Update menu
+	query := `UPDATE weekly_menus SET week_start_date = $1 WHERE id = $2`
+	result, err := tx.Exec(ctx, query, menu.WeekStartDate, id)
+	if err != nil {
+		return err
+	}
+	if result.RowsAffected() == 0 {
+		return errors.New("weekly menu not found")
+	}
+
+	// Remove all existing meals
+	_, err = tx.Exec(ctx, `DELETE FROM menu_meals WHERE menu_id = $1`, id)
+	if err != nil {
+		return err
+	}
+
+	// Add new meals
+	for _, menuMeal := range menu.Meals {
+		query := `INSERT INTO menu_meals (menu_id, meal_id, initial_stock, available_stock) VALUES ($1, $2, $3, $3)`
+		_, err = tx.Exec(ctx, query, id, menuMeal.Meal.ID, menuMeal.InitialStock)
+		if err != nil {
+			return err
+		}
+	}
+
+	return tx.Commit(ctx)
+}
+
+func (r *weeklyMenuRepository) Delete(ctx context.Context, id int) error {
+	tx, err := r.db.Begin(ctx)
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback(ctx)
+
+	// Delete menu meals first
+	_, err = tx.Exec(ctx, `DELETE FROM menu_meals WHERE menu_id = $1`, id)
+	if err != nil {
+		return err
+	}
+
+	// Delete menu
+	result, err := tx.Exec(ctx, `DELETE FROM weekly_menus WHERE id = $1`, id)
+	if err != nil {
+		return err
+	}
+	if result.RowsAffected() == 0 {
+		return errors.New("weekly menu not found")
+	}
+
+	return tx.Commit(ctx)
+}
+
+func (r *weeklyMenuRepository) RemoveMeal(ctx context.Context, menuID, mealID int) error {
+	query := `DELETE FROM menu_meals WHERE menu_id = $1 AND meal_id = $2`
+	result, err := r.db.Exec(ctx, query, menuID, mealID)
+	if err != nil {
+		return err
+	}
+	if result.RowsAffected() == 0 {
+		return errors.New("meal not found in menu")
+	}
 	return nil
 }

@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect, ReactNode } from 'react';
+import { createContext, useState, useEffect, type ReactNode } from 'react';
 import type { User, AuthResponse, LoginRequest, RegisterRequest } from '../types/auth';
 import { api } from '../lib/api';
 
@@ -7,6 +7,7 @@ interface AuthContextType {
     token: string | null;
     loading: boolean;
     isAuthenticated: boolean;
+    isAdmin: boolean;
     login: (credentials: LoginRequest) => Promise<void>;
     register: (credentials: RegisterRequest) => Promise<void>;
     logout: () => void;
@@ -69,6 +70,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         token,
         loading,
         isAuthenticated: !!user,
+        isAdmin: user?.role === 'admin',
         login,
         register,
         logout,
