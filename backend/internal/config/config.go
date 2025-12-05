@@ -21,7 +21,7 @@ func LoadConfig() *Config {
 
 	return &Config{
 		Port:      getEnv("PORT", "8080"),
-		DBUrl:     getEnv("DB_URL", ""),
+		DBUrl:     getEnv("DATABASE_URL", ""),
 		JWTSecret: getEnv("JWT_SECRET", "secret"),
 	}
 }
