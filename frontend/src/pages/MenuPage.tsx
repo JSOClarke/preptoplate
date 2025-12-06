@@ -21,6 +21,9 @@ export default function MenuPage() {
     const hasMinimumMeals = totalItems >= REQUIRED_MEAL_COUNT;
 
     const handleIncrement = (mealId: number) => {
+        if (totalItems >= REQUIRED_MEAL_COUNT) {
+            return;
+        }
         setMealQuantities((prev) => {
             const newMap = new Map(prev);
             const currentQty = newMap.get(mealId) || 0;
