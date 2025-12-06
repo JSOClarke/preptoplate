@@ -19,7 +19,7 @@ export default function AdminDashboard() {
     const loadStats = async () => {
         try {
             // Fetch total meals
-            const meals = await api.get<any[]>('/meals');
+            const meals = await api.get<unknown[]>('/meals');
 
             // Check if active menu exists
             let activeMenuExists = false;

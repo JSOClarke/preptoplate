@@ -5,7 +5,7 @@ import type { Order } from '../types/order';
 export default function OrderConfirmationPage() {
     const location = useLocation();
     const navigate = useNavigate();
-    const order = (location.state as any)?.order as Order | undefined;
+    const order = (location.state as { order?: Order })?.order;
 
     useEffect(() => {
         // Redirect to menu if no order data
