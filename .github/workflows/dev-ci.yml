@@ -51,6 +51,13 @@ jobs:
       working-directory: ./backend
       run: go mod download
     
+    - name: Apply database schema
+      working-directory: ./backend
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y postgresql-client
+        PGPASSWORD=testpass psql -h localhost -U testuser -d testdb -f schema.sql
+    
     - name: Run tests
       working-directory: ./backend
       run: go test -v ./...
