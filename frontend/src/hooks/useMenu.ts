@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import type { WeeklyMenu } from '../types/menu';
+import { api } from '../lib/api';
 
 export function useMenu() {
     const [menu, setMenu] = useState<WeeklyMenu | null>(null);
@@ -12,11 +13,7 @@ export function useMenu() {
 
     const fetchMenu = async () => {
         try {
-            const response = await fetch('http://localhost:8080/api/menu');
-            if (!response.ok) {
-                throw new Error('Failed to fetch menu');
-            }
-            const data = await response.json();
+            const data = await api.get<WeeklyMenu>('/menu');
             console.log('Menu data:', data); // Debug log
             setMenu(data);
         } catch (err) {

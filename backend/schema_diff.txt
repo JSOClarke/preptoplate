@@ -1,0 +1,575 @@
+--- local_schema.sql	2025-12-06 06:43:47.403252756 +0000
++++ remote_schema.sql	2025-12-06 06:44:06.463335565 +0000
+@@ -2,9 +2,9 @@
+ -- PostgreSQL database dump
+ --
+ 
+-\restrict QYKlm5zcjKq3eQEGi8rDS3nrfHbv3EUMHQNRxRny7fztaXAFTWAPu7HzrHjdbwW
++\restrict pBfgURGJ43NhfVDNhkCYavmhQelvaMLpMnAMIOS3FaC7JvOt3ftVrnelvZE2gzK
+ 
+--- Dumped from database version 15.15
++-- Dumped from database version 18.1 (Debian 18.1-1.pgdg12+2)
+ -- Dumped by pg_dump version 18.1
+ 
+ SET statement_timeout = 0;
+@@ -19,12 +19,21 @@
+ SET client_min_messages = warning;
+ SET row_security = off;
+ 
++--
++-- Name: public; Type: SCHEMA; Schema: -; Owner: preptoplate
++--
++
++-- *not* creating schema, since initdb creates it
++
++
++ALTER SCHEMA public OWNER TO preptoplate;
++
+ SET default_tablespace = '';
+ 
+ SET default_table_access_method = heap;
+ 
+ --
+--- Name: cart_items; Type: TABLE; Schema: public; Owner: postgres
++-- Name: cart_items; Type: TABLE; Schema: public; Owner: preptoplate
+ --
+ 
+ CREATE TABLE public.cart_items (
+@@ -36,10 +45,10 @@
+ );
+ 
+ 
+-ALTER TABLE public.cart_items OWNER TO postgres;
++ALTER TABLE public.cart_items OWNER TO preptoplate;
+ 
+ --
+--- Name: cart_items_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
++-- Name: cart_items_id_seq; Type: SEQUENCE; Schema: public; Owner: preptoplate
+ --
+ 
+ CREATE SEQUENCE public.cart_items_id_seq
+@@ -51,17 +60,17 @@
+     CACHE 1;
+ 
+ 
+-ALTER SEQUENCE public.cart_items_id_seq OWNER TO postgres;
++ALTER SEQUENCE public.cart_items_id_seq OWNER TO preptoplate;
+ 
+ --
+--- Name: cart_items_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
++-- Name: cart_items_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: preptoplate
+ --
+ 
+ ALTER SEQUENCE public.cart_items_id_seq OWNED BY public.cart_items.id;
+ 
+ 
+ --
+--- Name: carts; Type: TABLE; Schema: public; Owner: postgres
++-- Name: carts; Type: TABLE; Schema: public; Owner: preptoplate
+ --
+ 
+ CREATE TABLE public.carts (
+@@ -72,10 +81,10 @@
+ );
+ 
+ 
+-ALTER TABLE public.carts OWNER TO postgres;
++ALTER TABLE public.carts OWNER TO preptoplate;
+ 
+ --
+--- Name: carts_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
++-- Name: carts_id_seq; Type: SEQUENCE; Schema: public; Owner: preptoplate
+ --
+ 
+ CREATE SEQUENCE public.carts_id_seq
+@@ -87,17 +96,17 @@
+     CACHE 1;
+ 
+ 
+-ALTER SEQUENCE public.carts_id_seq OWNER TO postgres;
++ALTER SEQUENCE public.carts_id_seq OWNER TO preptoplate;
+ 
+ --
+--- Name: carts_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
++-- Name: carts_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: preptoplate
+ --
+ 
+ ALTER SEQUENCE public.carts_id_seq OWNED BY public.carts.id;
+ 
+ 
+ --
+--- Name: meals; Type: TABLE; Schema: public; Owner: postgres
++-- Name: meals; Type: TABLE; Schema: public; Owner: preptoplate
+ --
+ 
+ CREATE TABLE public.meals (
+@@ -113,10 +122,10 @@
+ );
+ 
+ 
+-ALTER TABLE public.meals OWNER TO postgres;
++ALTER TABLE public.meals OWNER TO preptoplate;
+ 
+ --
+--- Name: meals_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
++-- Name: meals_id_seq; Type: SEQUENCE; Schema: public; Owner: preptoplate
+ --
+ 
+ CREATE SEQUENCE public.meals_id_seq
+@@ -128,17 +137,17 @@
+     CACHE 1;
+ 
+ 
+-ALTER SEQUENCE public.meals_id_seq OWNER TO postgres;
++ALTER SEQUENCE public.meals_id_seq OWNER TO preptoplate;
+ 
+ --
+--- Name: meals_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
++-- Name: meals_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: preptoplate
+ --
+ 
+ ALTER SEQUENCE public.meals_id_seq OWNED BY public.meals.id;
+ 
+ 
+ --
+--- Name: menu_meals; Type: TABLE; Schema: public; Owner: postgres
++-- Name: menu_meals; Type: TABLE; Schema: public; Owner: preptoplate
+ --
+ 
+ CREATE TABLE public.menu_meals (
+@@ -149,10 +158,10 @@
+ );
+ 
+ 
+-ALTER TABLE public.menu_meals OWNER TO postgres;
++ALTER TABLE public.menu_meals OWNER TO preptoplate;
+ 
+ --
+--- Name: order_items; Type: TABLE; Schema: public; Owner: postgres
++-- Name: order_items; Type: TABLE; Schema: public; Owner: preptoplate
+ --
+ 
+ CREATE TABLE public.order_items (
+@@ -162,10 +171,10 @@
+ );
+ 
+ 
+-ALTER TABLE public.order_items OWNER TO postgres;
++ALTER TABLE public.order_items OWNER TO preptoplate;
+ 
+ --
+--- Name: orders; Type: TABLE; Schema: public; Owner: postgres
++-- Name: orders; Type: TABLE; Schema: public; Owner: preptoplate
+ --
+ 
+ CREATE TABLE public.orders (
+@@ -179,10 +188,10 @@
+ );
+ 
+ 
+-ALTER TABLE public.orders OWNER TO postgres;
++ALTER TABLE public.orders OWNER TO preptoplate;
+ 
+ --
+--- Name: orders_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
++-- Name: orders_id_seq; Type: SEQUENCE; Schema: public; Owner: preptoplate
+ --
+ 
+ CREATE SEQUENCE public.orders_id_seq
+@@ -194,17 +203,17 @@
+     CACHE 1;
+ 
+ 
+-ALTER SEQUENCE public.orders_id_seq OWNER TO postgres;
++ALTER SEQUENCE public.orders_id_seq OWNER TO preptoplate;
+ 
+ --
+--- Name: orders_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
++-- Name: orders_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: preptoplate
+ --
+ 
+ ALTER SEQUENCE public.orders_id_seq OWNED BY public.orders.id;
+ 
+ 
+ --
+--- Name: subscriptions; Type: TABLE; Schema: public; Owner: postgres
++-- Name: subscriptions; Type: TABLE; Schema: public; Owner: preptoplate
+ --
+ 
+ CREATE TABLE public.subscriptions (
+@@ -216,10 +225,10 @@
+ );
+ 
+ 
+-ALTER TABLE public.subscriptions OWNER TO postgres;
++ALTER TABLE public.subscriptions OWNER TO preptoplate;
+ 
+ --
+--- Name: subscriptions_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
++-- Name: subscriptions_id_seq; Type: SEQUENCE; Schema: public; Owner: preptoplate
+ --
+ 
+ CREATE SEQUENCE public.subscriptions_id_seq
+@@ -231,17 +240,17 @@
+     CACHE 1;
+ 
+ 
+-ALTER SEQUENCE public.subscriptions_id_seq OWNER TO postgres;
++ALTER SEQUENCE public.subscriptions_id_seq OWNER TO preptoplate;
+ 
+ --
+--- Name: subscriptions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
++-- Name: subscriptions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: preptoplate
+ --
+ 
+ ALTER SEQUENCE public.subscriptions_id_seq OWNED BY public.subscriptions.id;
+ 
+ 
+ --
+--- Name: users; Type: TABLE; Schema: public; Owner: postgres
++-- Name: users; Type: TABLE; Schema: public; Owner: preptoplate
+ --
+ 
+ CREATE TABLE public.users (
+@@ -253,10 +262,10 @@
+ );
+ 
+ 
+-ALTER TABLE public.users OWNER TO postgres;
++ALTER TABLE public.users OWNER TO preptoplate;
+ 
+ --
+--- Name: users_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
++-- Name: users_id_seq; Type: SEQUENCE; Schema: public; Owner: preptoplate
+ --
+ 
+ CREATE SEQUENCE public.users_id_seq
+@@ -268,17 +277,17 @@
+     CACHE 1;
+ 
+ 
+-ALTER SEQUENCE public.users_id_seq OWNER TO postgres;
++ALTER SEQUENCE public.users_id_seq OWNER TO preptoplate;
+ 
+ --
+--- Name: users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
++-- Name: users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: preptoplate
+ --
+ 
+ ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
+ 
+ 
+ --
+--- Name: weekly_menus; Type: TABLE; Schema: public; Owner: postgres
++-- Name: weekly_menus; Type: TABLE; Schema: public; Owner: preptoplate
+ --
+ 
+ CREATE TABLE public.weekly_menus (
+@@ -288,10 +297,10 @@
+ );
+ 
+ 
+-ALTER TABLE public.weekly_menus OWNER TO postgres;
++ALTER TABLE public.weekly_menus OWNER TO preptoplate;
+ 
+ --
+--- Name: weekly_menus_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
++-- Name: weekly_menus_id_seq; Type: SEQUENCE; Schema: public; Owner: preptoplate
+ --
+ 
+ CREATE SEQUENCE public.weekly_menus_id_seq
+@@ -303,66 +312,66 @@
+     CACHE 1;
+ 
+ 
+-ALTER SEQUENCE public.weekly_menus_id_seq OWNER TO postgres;
++ALTER SEQUENCE public.weekly_menus_id_seq OWNER TO preptoplate;
+ 
+ --
+--- Name: weekly_menus_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
++-- Name: weekly_menus_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: preptoplate
+ --
+ 
+ ALTER SEQUENCE public.weekly_menus_id_seq OWNED BY public.weekly_menus.id;
+ 
+ 
+ --
+--- Name: cart_items id; Type: DEFAULT; Schema: public; Owner: postgres
++-- Name: cart_items id; Type: DEFAULT; Schema: public; Owner: preptoplate
+ --
+ 
+ ALTER TABLE ONLY public.cart_items ALTER COLUMN id SET DEFAULT nextval('public.cart_items_id_seq'::regclass);
+ 
+ 
+ --
+--- Name: carts id; Type: DEFAULT; Schema: public; Owner: postgres
++-- Name: carts id; Type: DEFAULT; Schema: public; Owner: preptoplate
+ --
+ 
+ ALTER TABLE ONLY public.carts ALTER COLUMN id SET DEFAULT nextval('public.carts_id_seq'::regclass);
+ 
+ 
+ --
+--- Name: meals id; Type: DEFAULT; Schema: public; Owner: postgres
++-- Name: meals id; Type: DEFAULT; Schema: public; Owner: preptoplate
+ --
+ 
+ ALTER TABLE ONLY public.meals ALTER COLUMN id SET DEFAULT nextval('public.meals_id_seq'::regclass);
+ 
+ 
+ --
+--- Name: orders id; Type: DEFAULT; Schema: public; Owner: postgres
++-- Name: orders id; Type: DEFAULT; Schema: public; Owner: preptoplate
+ --
+ 
+ ALTER TABLE ONLY public.orders ALTER COLUMN id SET DEFAULT nextval('public.orders_id_seq'::regclass);
+ 
+ 
+ --
+--- Name: subscriptions id; Type: DEFAULT; Schema: public; Owner: postgres
++-- Name: subscriptions id; Type: DEFAULT; Schema: public; Owner: preptoplate
+ --
+ 
+ ALTER TABLE ONLY public.subscriptions ALTER COLUMN id SET DEFAULT nextval('public.subscriptions_id_seq'::regclass);
+ 
+ 
+ --
+--- Name: users id; Type: DEFAULT; Schema: public; Owner: postgres
++-- Name: users id; Type: DEFAULT; Schema: public; Owner: preptoplate
+ --
+ 
+ ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_id_seq'::regclass);
+ 
+ 
+ --
+--- Name: weekly_menus id; Type: DEFAULT; Schema: public; Owner: postgres
++-- Name: weekly_menus id; Type: DEFAULT; Schema: public; Owner: preptoplate
+ --
+ 
+ ALTER TABLE ONLY public.weekly_menus ALTER COLUMN id SET DEFAULT nextval('public.weekly_menus_id_seq'::regclass);
+ 
+ 
+ --
+--- Name: cart_items cart_items_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
++-- Name: cart_items cart_items_pkey; Type: CONSTRAINT; Schema: public; Owner: preptoplate
+ --
+ 
+ ALTER TABLE ONLY public.cart_items
+@@ -370,7 +379,7 @@
+ 
+ 
+ --
+--- Name: carts carts_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
++-- Name: carts carts_pkey; Type: CONSTRAINT; Schema: public; Owner: preptoplate
+ --
+ 
+ ALTER TABLE ONLY public.carts
+@@ -378,7 +387,7 @@
+ 
+ 
+ --
+--- Name: carts carts_user_id_key; Type: CONSTRAINT; Schema: public; Owner: postgres
++-- Name: carts carts_user_id_key; Type: CONSTRAINT; Schema: public; Owner: preptoplate
+ --
+ 
+ ALTER TABLE ONLY public.carts
+@@ -386,7 +395,7 @@
+ 
+ 
+ --
+--- Name: meals meals_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
++-- Name: meals meals_pkey; Type: CONSTRAINT; Schema: public; Owner: preptoplate
+ --
+ 
+ ALTER TABLE ONLY public.meals
+@@ -394,7 +403,7 @@
+ 
+ 
+ --
+--- Name: menu_meals menu_meals_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
++-- Name: menu_meals menu_meals_pkey; Type: CONSTRAINT; Schema: public; Owner: preptoplate
+ --
+ 
+ ALTER TABLE ONLY public.menu_meals
+@@ -402,7 +411,7 @@
+ 
+ 
+ --
+--- Name: order_items order_items_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
++-- Name: order_items order_items_pkey; Type: CONSTRAINT; Schema: public; Owner: preptoplate
+ --
+ 
+ ALTER TABLE ONLY public.order_items
+@@ -410,7 +419,7 @@
+ 
+ 
+ --
+--- Name: orders orders_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
++-- Name: orders orders_pkey; Type: CONSTRAINT; Schema: public; Owner: preptoplate
+ --
+ 
+ ALTER TABLE ONLY public.orders
+@@ -418,7 +427,7 @@
+ 
+ 
+ --
+--- Name: subscriptions subscriptions_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
++-- Name: subscriptions subscriptions_pkey; Type: CONSTRAINT; Schema: public; Owner: preptoplate
+ --
+ 
+ ALTER TABLE ONLY public.subscriptions
+@@ -426,7 +435,7 @@
+ 
+ 
+ --
+--- Name: users users_email_key; Type: CONSTRAINT; Schema: public; Owner: postgres
++-- Name: users users_email_key; Type: CONSTRAINT; Schema: public; Owner: preptoplate
+ --
+ 
+ ALTER TABLE ONLY public.users
+@@ -434,7 +443,7 @@
+ 
+ 
+ --
+--- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
++-- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: preptoplate
+ --
+ 
+ ALTER TABLE ONLY public.users
+@@ -442,7 +451,7 @@
+ 
+ 
+ --
+--- Name: weekly_menus weekly_menus_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
++-- Name: weekly_menus weekly_menus_pkey; Type: CONSTRAINT; Schema: public; Owner: preptoplate
+ --
+ 
+ ALTER TABLE ONLY public.weekly_menus
+@@ -450,7 +459,7 @@
+ 
+ 
+ --
+--- Name: cart_items cart_items_cart_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
++-- Name: cart_items cart_items_cart_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: preptoplate
+ --
+ 
+ ALTER TABLE ONLY public.cart_items
+@@ -458,7 +467,7 @@
+ 
+ 
+ --
+--- Name: cart_items cart_items_meal_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
++-- Name: cart_items cart_items_meal_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: preptoplate
+ --
+ 
+ ALTER TABLE ONLY public.cart_items
+@@ -466,7 +475,7 @@
+ 
+ 
+ --
+--- Name: carts carts_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
++-- Name: carts carts_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: preptoplate
+ --
+ 
+ ALTER TABLE ONLY public.carts
+@@ -474,7 +483,7 @@
+ 
+ 
+ --
+--- Name: menu_meals menu_meals_meal_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
++-- Name: menu_meals menu_meals_meal_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: preptoplate
+ --
+ 
+ ALTER TABLE ONLY public.menu_meals
+@@ -482,7 +491,7 @@
+ 
+ 
+ --
+--- Name: menu_meals menu_meals_menu_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
++-- Name: menu_meals menu_meals_menu_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: preptoplate
+ --
+ 
+ ALTER TABLE ONLY public.menu_meals
+@@ -490,7 +499,7 @@
+ 
+ 
+ --
+--- Name: order_items order_items_meal_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
++-- Name: order_items order_items_meal_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: preptoplate
+ --
+ 
+ ALTER TABLE ONLY public.order_items
+@@ -498,7 +507,7 @@
+ 
+ 
+ --
+--- Name: order_items order_items_order_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
++-- Name: order_items order_items_order_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: preptoplate
+ --
+ 
+ ALTER TABLE ONLY public.order_items
+@@ -506,7 +515,7 @@
+ 
+ 
+ --
+--- Name: orders orders_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
++-- Name: orders orders_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: preptoplate
+ --
+ 
+ ALTER TABLE ONLY public.orders
+@@ -514,7 +523,7 @@
+ 
+ 
+ --
+--- Name: orders orders_week_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
++-- Name: orders orders_week_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: preptoplate
+ --
+ 
+ ALTER TABLE ONLY public.orders
+@@ -522,7 +531,7 @@
+ 
+ 
+ --
+--- Name: subscriptions subscriptions_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
++-- Name: subscriptions subscriptions_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: preptoplate
+ --
+ 
+ ALTER TABLE ONLY public.subscriptions
+@@ -530,8 +539,36 @@
+ 
+ 
+ --
++-- Name: DEFAULT PRIVILEGES FOR SEQUENCES; Type: DEFAULT ACL; Schema: -; Owner: postgres
++--
++
++ALTER DEFAULT PRIVILEGES FOR ROLE postgres GRANT ALL ON SEQUENCES TO preptoplate;
++
++
++--
++-- Name: DEFAULT PRIVILEGES FOR TYPES; Type: DEFAULT ACL; Schema: -; Owner: postgres
++--
++
++ALTER DEFAULT PRIVILEGES FOR ROLE postgres GRANT ALL ON TYPES TO preptoplate;
++
++
++--
++-- Name: DEFAULT PRIVILEGES FOR FUNCTIONS; Type: DEFAULT ACL; Schema: -; Owner: postgres
++--
++
++ALTER DEFAULT PRIVILEGES FOR ROLE postgres GRANT ALL ON FUNCTIONS TO preptoplate;
++
++
++--
++-- Name: DEFAULT PRIVILEGES FOR TABLES; Type: DEFAULT ACL; Schema: -; Owner: postgres
++--
++
++ALTER DEFAULT PRIVILEGES FOR ROLE postgres GRANT ALL ON TABLES TO preptoplate;
++
++
++--
+ -- PostgreSQL database dump complete
+ --
+ 
+-\unrestrict QYKlm5zcjKq3eQEGi8rDS3nrfHbv3EUMHQNRxRny7fztaXAFTWAPu7HzrHjdbwW
++\unrestrict pBfgURGJ43NhfVDNhkCYavmhQelvaMLpMnAMIOS3FaC7JvOt3ftVrnelvZE2gzK
+ 

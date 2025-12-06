@@ -8,9 +8,12 @@ import (
 )
 
 type Config struct {
-	Port      string
-	DBUrl     string
-	JWTSecret string
+	Port                string
+	DBUrl               string
+	JWTSecret           string
+	CloudinaryCloudName string
+	CloudinaryAPIKey    string
+	CloudinaryAPISecret string
 }
 
 func LoadConfig() *Config {
@@ -20,9 +23,12 @@ func LoadConfig() *Config {
 	}
 
 	return &Config{
-		Port:      getEnv("PORT", "8080"),
-		DBUrl:     getEnv("DATABASE_URL", ""),
-		JWTSecret: getEnv("JWT_SECRET", "secret"),
+		Port:                getEnv("PORT", "8080"),
+		DBUrl:               getEnv("DATABASE_URL", ""),
+		JWTSecret:           getEnv("JWT_SECRET", "secret"),
+		CloudinaryCloudName: getEnv("CLOUDINARY_CLOUD_NAME", ""),
+		CloudinaryAPIKey:    getEnv("CLOUDINARY_API_KEY", ""),
+		CloudinaryAPISecret: getEnv("CLOUDINARY_API_SECRET", ""),
 	}
 }
 
