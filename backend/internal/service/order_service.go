@@ -16,16 +16,20 @@ type OrderService interface {
 }
 
 type orderService struct {
-	orderRepo repository.OrderRepository
-	cartRepo  repository.CartRepository
-	menuRepo  repository.WeeklyMenuRepository
+	orderRepo    repository.OrderRepository
+	cartRepo     repository.CartRepository
+	menuRepo     repository.WeeklyMenuRepository
+	emailService EmailService
+	userRepo     repository.UserRepository
 }
 
-func NewOrderService(orderRepo repository.OrderRepository, cartRepo repository.CartRepository, menuRepo repository.WeeklyMenuRepository) OrderService {
+func NewOrderService(orderRepo repository.OrderRepository, cartRepo repository.CartRepository, menuRepo repository.WeeklyMenuRepository, emailService EmailService, userRepo repository.UserRepository) OrderService {
 	return &orderService{
-		orderRepo: orderRepo,
-		cartRepo:  cartRepo,
-		menuRepo:  menuRepo,
+		orderRepo:    orderRepo,
+		cartRepo:     cartRepo,
+		menuRepo:     menuRepo,
+		emailService: emailService,
+		userRepo:     userRepo,
 	}
 }
 
@@ -111,8 +115,26 @@ func (s *orderService) Checkout(ctx context.Context, userID int, req *models.Che
 		return nil, err
 	}
 
-	// Return order with items
-	return s.orderRepo.GetByID(ctx, order.ID)
+	// Get complete order details
+	finalOrder, err := s.orderRepo.GetByID(ctx, order.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	// Get user email
+	user, err := s.userRepo.GetByID(ctx, userID)
+	if err == nil && user != nil {
+		// Send receipt asynchronously
+		go func() {
+			err := s.emailService.SendOrderReceipt(user.Email, finalOrder)
+			if err != nil {
+				// Log error but don't fail the request
+				// In production, use a proper logger
+			}
+		}()
+	}
+
+	return finalOrder, nil
 }
 
 func (s *orderService) GetByID(ctx context.Context, userID, orderID int) (*models.Order, error) {

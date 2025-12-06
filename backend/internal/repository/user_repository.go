@@ -12,6 +12,7 @@ import (
 type UserRepository interface {
 	Create(ctx context.Context, user *models.User) error
 	GetByEmail(ctx context.Context, email string) (*models.User, error)
+	GetByID(ctx context.Context, id int) (*models.User, error)
 }
 
 type userRepository struct {
@@ -32,6 +33,19 @@ func (r *userRepository) GetByEmail(ctx context.Context, email string) (*models.
 	query := `SELECT id, email, password_hash, role, created_at FROM users WHERE email = $1`
 	var user models.User
 	err := r.db.QueryRow(ctx, query, email).Scan(&user.ID, &user.Email, &user.PasswordHash, &user.Role, &user.CreatedAt)
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, nil
+		}
+		return nil, err
+	}
+	return &user, nil
+}
+
+func (r *userRepository) GetByID(ctx context.Context, id int) (*models.User, error) {
+	query := `SELECT id, email, password_hash, role, created_at FROM users WHERE id = $1`
+	var user models.User
+	err := r.db.QueryRow(ctx, query, id).Scan(&user.ID, &user.Email, &user.PasswordHash, &user.Role, &user.CreatedAt)
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, nil

@@ -43,10 +43,15 @@ func SetupRouter(db *pgxpool.Pool, cfg *config.Config) *gin.Engine {
 	mealService := service.NewMealService(mealRepo)
 	cartService := service.NewCartService(cartRepo, mealRepo)
 	menuService := service.NewWeeklyMenuService(menuRepo, mealRepo)
-	orderService := service.NewOrderService(orderRepo, cartRepo, menuRepo)
 
 	// Image Service (Cloudinary)
 	imageService, _ := service.NewImageService() // Ignore error, will fail gracefully on upload if not configured
+
+	// Email Service (Resend)
+	emailService := service.NewEmailService(cfg)
+
+	// Order Service
+	orderService := service.NewOrderService(orderRepo, cartRepo, menuRepo, emailService, userRepo)
 
 	// Handlers
 	authHandler := handlers.NewAuthHandler(authService)

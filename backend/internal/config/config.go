@@ -14,6 +14,8 @@ type Config struct {
 	CloudinaryCloudName string
 	CloudinaryAPIKey    string
 	CloudinaryAPISecret string
+	EmailAPIKey         string
+	EmailFromAddress    string
 }
 
 func LoadConfig() *Config {
@@ -29,6 +31,8 @@ func LoadConfig() *Config {
 		CloudinaryCloudName: getEnv("CLOUDINARY_CLOUD_NAME", ""),
 		CloudinaryAPIKey:    getEnv("CLOUDINARY_API_KEY", ""),
 		CloudinaryAPISecret: getEnv("CLOUDINARY_API_SECRET", ""),
+		EmailAPIKey:         getEnv("EMAIL_API_KEY", ""),
+		EmailFromAddress:    getEnv("EMAIL_FROM_ADDRESS", "orders@preptoplate.com"),
 	}
 }
 
