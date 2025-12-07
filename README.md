@@ -1,4 +1,4 @@
-# PrepToPlate
+# PrepToPlate - A convenient meal prep delivery service
 
 <p align="center">
   <img src="frontend/public/logo.png" alt="PrepToPlate Logo" width="200"/>
