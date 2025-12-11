@@ -10,7 +10,24 @@
 
 ## Overview
 
+
 PrepToPlate is a full-stack web application that allows customers to browse weekly meal menus, select their preferred meals, and place orders for meal prep delivery. The platform features an intuitive user interface, robust admin dashboard for menu and stock management, and automated email receipts upon order placement.
+
+
+
+## Live Demo
+
+**[https://preptoplate.netlify.app/](https://preptoplate.netlify.app/)**
+
+### Demo Credentials
+
+**Normal User**
+- Username: `guest@preptoplate.com`
+- Password: `guest123`
+
+**Admin User**
+- Username: `admin@preptoplate.com`
+- Password: `admin123`
 
 ## Tech Stack
 
