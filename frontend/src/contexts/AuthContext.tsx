@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 import { createContext, useState, useEffect, type ReactNode } from 'react';
 import type { User, AuthResponse, LoginRequest, RegisterRequest } from '../types/auth';
 import { api } from '../lib/api';
@@ -13,6 +14,7 @@ interface AuthContextType {
     logout: () => void;
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {

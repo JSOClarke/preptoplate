@@ -13,6 +13,7 @@ interface UseTableFiltersOptions<T> {
     searchFields: (keyof T)[];
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function useTableFilters<T extends Record<string, any>>({
     data,
     searchFields,

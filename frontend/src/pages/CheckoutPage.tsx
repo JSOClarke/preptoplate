@@ -13,11 +13,6 @@ export default function CheckoutPage() {
     const { getCart, checkout } = useCart();
     const navigate = useNavigate();
 
-    // Load cart on mount
-    useEffect(() => {
-        loadCart();
-    }, []);
-
     const loadCart = async () => {
         const cartData = await getCart();
         if (cartData && cartData.items && cartData.items.length > 0) {
@@ -29,6 +24,12 @@ export default function CheckoutPage() {
         }
         setLoading(false);
     };
+
+    // Load cart on mount
+    useEffect(() => {
+        loadCart();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     // Set default delivery date to next week
     useEffect(() => {

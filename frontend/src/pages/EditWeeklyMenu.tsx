@@ -28,6 +28,7 @@ export default function EditWeeklyMenu() {
 
     useEffect(() => {
         loadData();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [id]);
 
     const loadData = async () => {
@@ -56,7 +57,7 @@ export default function EditWeeklyMenu() {
             }
 
             setError(null);
-        } catch (err) {
+        } catch {
             setError('Failed to load menu data');
         } finally {
             setLoading(false);

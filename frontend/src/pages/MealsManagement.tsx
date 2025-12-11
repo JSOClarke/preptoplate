@@ -50,7 +50,7 @@ export default function MealsManagement() {
             const data = await api.get<Meal[]>('/meals');
             setMeals(data || []);
             setError(null);
-        } catch (err) {
+        } catch {
             setError('Failed to load meals');
         } finally {
             setLoading(false);

@@ -12,7 +12,7 @@ export default function LoginPage() {
     const navigate = useNavigate();
     const location = useLocation();
 
-    const from = (location.state as any)?.from?.pathname || '/menu';
+    const from = (location.state as { from?: { pathname?: string } })?.from?.pathname || '/menu';
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();

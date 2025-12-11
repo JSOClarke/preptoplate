@@ -38,8 +38,8 @@ export default function MenusManagement() {
             setMenus(menusData || []);
 
             setError(null);
-        } catch (err) {
-            setError('Failed to load data');
+        } catch {
+            setError('Failed to load menus');
         } finally {
             setLoading(false);
         }
